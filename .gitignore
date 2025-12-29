@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.pyc
+
+# Data & warehouse artifacts (do not commit)
+data/
+warehouse/
+*.duckdb
+
+# OS / editor noise
+.DS_Store
