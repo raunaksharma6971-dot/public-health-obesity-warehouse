@@ -1,5 +1,3 @@
-# public-health-obesity-warehouse
-
 # Public Health Obesity Analytics Warehouse
 
 ## Overview
