@@ -42,3 +42,27 @@ LIMIT 10;
 
 con.close()
 PY
+
+
+
+## Health Disparities Insights (Stratified Analysis)
+
+To evaluate equity gaps, the pipeline builds stratified marts for adult obesity prevalence by:
+- Income
+- Education
+- Sex
+- Race/Ethnicity
+
+These marts enable comparisons across groups over time and geography.
+
+### Obesity % by Income Group (Latest Year)
+![Obesity by Income](dashboards/obesity_by_income_latest.png)
+
+### Obesity % by Education Level (Latest Year)
+![Obesity by Education](dashboards/obesity_by_education_latest.png)
+
+**Marts used**
+- `marts.mart_obesity_by_income`
+- `marts.mart_obesity_by_education`
+- `marts.mart_obesity_by_sex`
+- `marts.mart_obesity_by_race`
