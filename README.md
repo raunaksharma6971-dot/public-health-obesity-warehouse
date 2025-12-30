@@ -1,59 +1,123 @@
 # public-health-obesity-warehouse
-python - << 'PY'
-import duckdb
-con = duckdb.connect("warehouse/analytics.duckdb")
 
-print("\nTop 10 obesity states (latest year):")
-print(con.execute("""
-SELECT * FROM marts.mart_obesity_latest_rank LIMIT 10;
-""").fetchdf())
+# Public Health Obesity Analytics Warehouse
 
-print("\nBottom 10 obesity states (latest year):")
-print(con.execute("""
-SELECT * FROM marts.mart_obesity_latest_rank
-ORDER BY obesity_rank_high_to_low DESC
-LIMIT 10;
-""").fetchdf())
+## Overview
+This project builds an end-to-end **public health analytics warehouse** using publicly available CDC data on nutrition, physical activity, and obesity. The pipeline ingests raw data, models analytics-ready marts using DuckDB and SQL, and produces visual insights to support population health and health equity analysis across U.S. states from **2011 to 2024**.
 
-print("\nStates with largest obesity increase from 2011 to 2024 (where available):")
-print(con.execute("""
-WITH start_year AS (SELECT 2011 AS y),
-     end_year AS (SELECT 2024 AS y),
-s AS (
-  SELECT state, obesity_pct AS obesity_2011
-  FROM marts.mart_obesity_trends
-  WHERE year = 2011
-),
-e AS (
-  SELECT state, obesity_pct AS obesity_2024
-  FROM marts.mart_obesity_trends
-  WHERE year = 2024
-)
-SELECT
-  e.state,
-  s.obesity_2011,
-  e.obesity_2024,
-  (e.obesity_2024 - s.obesity_2011) AS change_2011_to_2024
-FROM e
-JOIN s USING (state)
-ORDER BY change_2011_to_2024 DESC
-LIMIT 10;
-""").fetchdf())
+The focus of the project is not only trend analysis, but also identifying **socioeconomic and educational disparities** in adult obesity prevalence.
 
-con.close()
-PY
+---
+
+## Objectives
+- Build a reproducible analytics pipeline using only **free, browser-based tools**
+- Model clean, queryable marts for public health indicators
+- Analyze long-term obesity trends and state-level rankings
+- Quantify **health disparities by income and education**
+- Produce stakeholder-ready visualizations and insights
+
+---
+
+## Dataset
+- **Source:** CDC – Nutrition, Physical Activity, and Obesity (Public Dataset)
+- **Time Period:** 2011–2024
+- **Geography:** U.S. States and Territories
+- **Population:** Adults aged 18+
+
+---
+
+## Tech Stack 
+- **GitHub Codespaces** – cloud-based development environment
+- **Python** – data ingestion, transformation, automation
+- **DuckDB** – embedded analytical data warehouse
+- **SQL** – analytics marts and aggregation logic
+- **Matplotlib** – data visualization
+
+---
+
+## Repository Structure
+├── scripts/
+│ ├── 01_load_to_duckdb.py
+│ ├── 02_inspect_data.py
+│ ├── 03_create_marts_precise.py
+│ ├── 04_make_charts.py
+│ ├── 05_create_disparity_marts.py
+│ └── 06_make_disparity_charts.py
+├── dashboards/
+│ ├── avg_obesity_trend.png
+│ ├── top10_obesity_latest.png
+│ ├── obesity_vs_no_activity_latest.png
+│ ├── obesity_by_income_latest.png
+│ └── obesity_by_education_latest.png
+└── README.md
 
 
+
+---
+
+## Pipeline Architecture
+1. **Raw Layer**
+   - Load CDC obesity and physical activity CSV data into DuckDB
+
+2. **Analytics Marts Layer**
+   - State-level obesity trends over time
+   - Latest-year obesity rankings
+   - Physical inactivity indicators
+   - Stratified disparity marts (income, education, sex, race/ethnicity)
+
+3. **Visualization Layer**
+   - Trend charts
+   - Ranking charts
+   - Disparity charts by income and education
+
+---
+
+## Key Findings (Latest Year Snapshot – 2024)
+
+### Top 10 States by Adult Obesity Prevalence
+| State | Obesity % | Rank |
+|------|-----------|------|
+| WV | 41.4 | 1 |
+| MS | 40.4 | 2 |
+| GU | 40.2 | 3 |
+| LA | 39.2 | 4 |
+| AL | 38.9 | 5 |
+| AR | 38.9 | 5 |
+| IN | 38.4 | 7 |
+| VI | 37.7 | 8 |
+| KS | 37.6 | 9 |
+| NE | 37.6 | 9 |
+
+### Socioeconomic Insights
+- Adult obesity prevalence is **higher in lower-income groups**
+- Individuals earning **$75,000 or more** have notably lower obesity prevalence than those earning under $25,000
+- Obesity prevalence **declines consistently with higher educational attainment**
+- College graduates show substantially lower obesity rates compared to individuals with high school education or less
+
+---
+
+## Visual Insights
+
+### Average Adult Obesity % Over Time (2011–2024)
+![Average Obesity Trend](dashboards/avg_obesity_trend.png)
+
+### Top 10 States by Obesity % (Latest Year)
+![Top 10 Obesity](dashboards/top10_obesity_latest.png)
+
+### Obesity % vs No Leisure-Time Physical Activity (Latest Year)
+![Obesity vs No Activity](dashboards/obesity_vs_no_activity_latest.png)
+
+---
 
 ## Health Disparities Insights (Stratified Analysis)
 
-To evaluate equity gaps, the pipeline builds stratified marts for adult obesity prevalence by:
+To evaluate health equity gaps, the pipeline builds **stratified analytics marts** for adult obesity prevalence by:
 - Income
 - Education
 - Sex
 - Race/Ethnicity
 
-These marts enable comparisons across groups over time and geography.
+These marts enable comparisons across demographic groups, geographies, and time.
 
 ### Obesity % by Income Group (Latest Year)
 ![Obesity by Income](dashboards/obesity_by_income_latest.png)
@@ -61,8 +125,20 @@ These marts enable comparisons across groups over time and geography.
 ### Obesity % by Education Level (Latest Year)
 ![Obesity by Education](dashboards/obesity_by_education_latest.png)
 
-**Marts used**
+**Disparity Marts Used**
 - `marts.mart_obesity_by_income`
 - `marts.mart_obesity_by_education`
 - `marts.mart_obesity_by_sex`
 - `marts.mart_obesity_by_race`
+
+---
+
+## How to Run the Project
+Run the following commands from the repository root in GitHub Codespaces:
+
+```bash
+python scripts/01_load_to_duckdb.py
+python scripts/03_create_marts_precise.py
+python scripts/04_make_charts.py
+python scripts/05_create_disparity_marts.py
+python scripts/06_make_disparity_charts.py
