@@ -70,7 +70,7 @@ The focus of the project is not only trend analysis, but also identifying **soci
 
 ---
 
-## Key Findings (Latest Year Snapshot – 2024)
+## Key Findings 
 
 ### Top 10 States by Adult Obesity Prevalence
 | State | Obesity % | Rank |
