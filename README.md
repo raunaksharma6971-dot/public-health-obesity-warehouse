@@ -131,7 +131,7 @@ These marts enable comparisons across demographic groups, geographies, and time.
 
 ---
 
-## How to Run the Project
+## To Run the Project
 Run the following commands from the repository root in GitHub Codespaces:
 
 ```bash
